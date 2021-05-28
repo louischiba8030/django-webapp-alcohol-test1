@@ -55,7 +55,7 @@ def gspread_al_read():
 	df['手指消毒使用量'] = list(alsum_values)
 
 	context = {
-		'al_table': df
+		'al_table': df.to_html()
 	}
 
 	return render(request, 'myapp2/index.html', context)
