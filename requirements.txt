@@ -1,5 +1,6 @@
 pandas
 django
+dhango_heroku
 oauth2client
 gunicorn
 gspread
