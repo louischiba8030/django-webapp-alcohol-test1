@@ -1,4 +1,5 @@
 pandas
+django
 oauth2client
 gunicorn
 gspread
