@@ -5,12 +5,12 @@ import os
 import pandas as pd
 import itertools
 
-def get_alsum(xid):
+def get_alsum(data_df, xid):
 	al_sum = data_df.loc[data_df['ID'] == xid, '手指消毒使用料(単位：ml)'].astype(int).sum()
 
 	return al_sum
 
-def gspread_al_read():
+def index(request):
 	api_scope = ['https://www.googleapis.com/auth/spreadsheets',
             'https://www.googleapis.com/auth/drive']
 
@@ -47,7 +47,7 @@ def gspread_al_read():
 	# Append 'E' column: '手指消毒使用量合計'
 	#毒使用量合計'] = df.iloc[:, 0].values.tolist()
 	id_list = df.iloc[:, 0].values.tolist()
-	alsum_values = map(lambda x: get_alsum(x), id_list)
+	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)
 
 	context = {
