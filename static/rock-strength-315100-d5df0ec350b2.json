@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "rock-strength-315100",
+  "private_key_id": "d5df0ec350b21a8f6736ecba82432857f26d868a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCQD8jvd0HuPsVv\noFWjkLc6v9xG6nK/7PKByfG83rslGiCRY4qNDvuIX9oLfeJgKiLS9R0Sx+orZ4ic\nTH/yBHmFJ6pWOe7XYrmJOnTufMRNplNkAnCQ2ewZXAv0wPAyYgz5jDKhCFEMlu69\nDcfpIJJkOkjRBik5FlIAPAef4z1ARg/aZlwrRA4sX2GvKSZoUj0CnWLTnn/11X5M\naTdj+dCDNUZWVtHkdO/Go+bIkf0JQqTJJ4yXclullxQJpBWol4EgEGBO8zZY6P7N\ntHHFd09Jz6EPI1sONXoaXl+cCk2+Ff2IfEpTDC5qgK/sHDMhoiyo9c45SIB8a+DO\nqZ52uHlbAgMBAAECggEAASEmjajCixLR6yH3hJdItdIK8OwQp0GSgIMBUrOaWwby\nlME837CWN0etHCRKBz/9UuhvaGt0gg+clMEiywEkT290A0YOrICj0hgeZ5Tx2Gat\nRl5LMfo2GC15EzEEu8MPX/uB6seiabYF5tSPVIbCrxIn6lT2iMc3MF+dcwWjQCLp\neWvrCoUhZ53cyTOhN3uGigq/CpoMUQPx3EYsXEe+EfJFFp6RgjAeTqyZD0/Ye0QU\nmGKYmn4J9ch6v+ATqRidmyiEtU21gvx+/MsJLF5gDWnBaKgF/kGOtswpkjME3dR1\nfbFCuwEL+mW+eDVJDPpK/1xkmlLe0ufXDiJ42B2+GQKBgQDJknjWgv9lnE/ftEYg\nEpQqjB7rnXvzRQ13VK+p/CwSGqzLs8rbzKvUl5oml/zFPIEUM86A0S83VfNepUb2\nM45xcQxSf9KM/ryMVXrCnooGeOYTS+3TapF0rfVNQDIAvJF7SmuUFzUhP/z/92bQ\nQIT1tpFUWQklRkU9qVDF8ym8kwKBgQC29fEce0KeuXIJdnyEFBs6SVikirQ8R7GW\nGIHZ56C606Vw+ZLKH0dSwU/MsKvoHNrgey3feOKC+k7+3kOc6+NtoIFr+kO2NWKE\nQueUC//B/O8fc5yAxiiPwCwbEDy92BYo/IHtpyaGl63aU/1qYzn1Gw05Kn6455mp\nYtz3cT8VGQKBgE1ehjk4ENWsmM/xvxTibLKkE942FXR7pb6O59okK7pLONX7Tbru\nJWo1Qnrbza7bGWRqujGhmTDxMbe7UrB/e4Y5cRRdcbCiujZXPQZkmfAACbeQZlnG\nxsv1VXlwUYEM3/5lw0MVYVRA3lhVWsZGbYJur/ujLSp8fWk8iv9f5T43AoGAEtMV\nPr/z587ey9h0EUbcUk/vneZjivw5al8VJS1u3SofkJMtJjy3ou0e38mhtl0ZrBUg\ncCjI7X8Bl7mYrVGb8dCc4FY8l0fA3ijgGNxvMS9sDwlfJeS9kaTNJO+zwDi2dvsc\nBy62iQycJ6WSolqZQP3Ki4IyzaWOqt3wLElrmykCgYEAiEixdPGZLBZpNgZECZN4\nuEYBwiM8dQ8Y11iHOqbPlea9deKvVEh+tjBrcPUnFg5OCkB1jXn93lCkMh3oHhZV\noqMOJ9Hk4cMJbWAlJgVC47VgR6csLLaB6b3muzHksOD0ZUVvHKEyI+/4ZV3QrKT4\nIBJCgisBWXmSvo5GEfB0InU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "read-gspread-sheets-from-pytho@rock-strength-315100.iam.gserviceaccount.com",
+  "client_id": "100612977906796809430",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/read-gspread-sheets-from-pytho%40rock-strength-315100.iam.gserviceaccount.com"
+}
