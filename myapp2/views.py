@@ -18,7 +18,7 @@ def gspread_al_read():
 	api_scope = ['https://www.googleapis.com/auth/spreadsheets',
             'https://www.googleapis.com/auth/drive']
 
-	credentials_path = '/static/rock-strength-315100-d5df0ec350b2.json'
+	credentials_path = 'rock-strength-315100-d5df0ec350b2.json'
 	credentials = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, api_scope)
 	gspread_client = gspread.authorize(credentials)
 
