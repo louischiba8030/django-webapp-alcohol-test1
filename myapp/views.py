@@ -1,4 +1,13 @@
+# 検温一覧の職員idリストから、'外来'の職員のidだけを抽出する
+# Ryo Chiba
+#
+# Last update: 2021/05/28 (Fri.)
+# Date: 2021/05/28 (Fri.)
+
 from django.shortcuts import render
+from . import forms
+#from app.forms import SampleChoiceForm
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
@@ -50,8 +59,12 @@ def index(request):
 	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)
 
+	# Choice
+	choices = forms.SampleChoiceForm()
+
 	context = {
-		'al_table': df.to_html()
+		'al_table': df.to_html(),
+		'choices': choices,
 	}
 
 	return render(request, 'myapp/index.html', context)
