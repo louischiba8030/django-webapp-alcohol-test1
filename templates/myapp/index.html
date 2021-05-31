@@ -25,6 +25,7 @@
 <p><h1>2021年05月の個人別手指消毒使用量（合計）</h1></p>
 <hr />
 <p>所属部署:<span id="span2"></span></p>
+<form id="fid" method="POST" action="">
 <select name="xloc_choice" id="xloc_choice">
 <option disabled selected value>選択してください</option>
 <option value="救外">救外</option>
@@ -32,6 +33,8 @@
 <option value="ICU">ICU</option>
 <option value="手術室">手術室</option>
 </select>
+{% csrf_token %}
+</form>
 
 	{{ al_table | safe }}
 <p><span id="span3"></span></p>
