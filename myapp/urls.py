@@ -4,4 +4,5 @@ from . import views
 app_name = 'myapp'
 urlpatterns = [
 	path('', views.index, name='index'),
+	path('ajax_test/', views.ajax_test, name='ajax_test'),
 ]

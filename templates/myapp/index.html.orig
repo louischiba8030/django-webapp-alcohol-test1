@@ -23,6 +23,7 @@
     {% block extrajs %}{% endblock %}
 
 <p>所属部署:<span id="span2"></span></p>
+<form id="fid" method="POST" action="">
 <select name="xloc_choice" id="xloc_choice">
 <option disabled selected value>選択してください</option>
 <option value="救外">救外</option>
@@ -31,41 +32,11 @@
 <option value="手術室">手術室</option>
 </select>
 
+{% csrf_token %}
+</form>
+
 	{{ al_table | safe }}
-<p><span id="span3"></span></p>
 <script>
-$(function() {
-  //const select = document.querySelector('select[name=xloc_choice]');
-  //$("select").val(0); 
-  $('[name=xloc_choice]').prop("selectedIndex", 0);
-});
-const select = document.querySelector('select[name=xloc_choice]');
-select.addEventListener('change', function(e) {
-  xloc_id = document.getElementById("span2");
-  xloc_id.textContent = '';
-  xloc_id.insertAdjacentText('afterbegin', select.value);
-
-  XMLHttpRequestInPOST(select.value);
-});
-
-function XMLHttpRequestInPOST(val) {
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-var csrftoken = getCookie('csrftoken');
-
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
@@ -77,26 +48,20 @@ $.ajaxSetup({
         }
     }
 });
-$.ajax({
-        url: '/myapp/ajax_test/',
-        data: {'xlocc': val},
-        beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          }
-        },
-        dataType: "html", // json
-        type: "POST",
-	success: function(data){
-		var span_id = document.getElementById("span3");
-		span_id.textContent = '';
-		span_id.insertAdjacentHTML('afterbegin', data);
-	},
-	error: function(req, text){
-		console.log(text);
-	},
+
+window.addEventListener('DOMContentLoaded', function() {
+  const xhr = new XMLHttpRequest();
+  const fd = new FormData();
+
+  xhr.open('post', '');
+
+  const select = document.querySelector('select[name=xloc_choice]');
+  select.addEventListener('change', (e) => {
+    fd.append('xlocc', select.value);
+
+    xhr.send(fd);
+  });
 });
-}
 </script>
   </body>
 </html>

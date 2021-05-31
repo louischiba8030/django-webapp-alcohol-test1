@@ -5,8 +5,10 @@
 # Date: 2021/05/28 (Fri.)
 
 from django.shortcuts import render
+from django.http import HttpResponse
 from . import forms
 #from app.forms import SampleChoiceForm
+from django.template import loader
 
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -20,6 +22,17 @@ def get_alsum(data_df, xid):
 	return al_sum
 
 def index(request):
+	template = loader.get_template('myapp/index.html')
+	context = {}
+	return HttpResponse(template.render(context, request))
+	#return render(request, "myapp/index.html")
+
+def ajax_test(request):
+	# 部署選択プルダウンの値を取得
+	x_choice = request.POST.get('xlocc', None)
+	# DEBUG
+	print("Booooo!")
+
 	api_scope = ['https://www.googleapis.com/auth/spreadsheets',
             'https://www.googleapis.com/auth/drive']
 
@@ -40,8 +53,7 @@ def index(request):
 	df.drop('index', axis=1, inplace=True)
 
 	# Extract data
-	xloc = '外来'
-	df = df.query('所属部署 == @xloc').iloc[:, [0, 1, 2, 4]]
+	df = df.query('所属部署 == @x_choice').iloc[:, [0, 1, 2, 4]]
 
 	## Rename columns
 	data_df = pd.DataFrame(data_sh.get_all_values())
@@ -58,13 +70,18 @@ def index(request):
 	id_list = df.iloc[:, 0].values.tolist()
 	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)
+	
+	# debug
+	print(df)
 
 	# Choice
-	choices = forms.SampleChoiceForm()
+	#choices = forms.SampleChoiceForm()
 
 	context = {
 		'al_table': df.to_html(),
-		'choices': choices,
+		#'choices': choices,
+		#'location': x_choice,
 	}
 
-	return render(request, 'myapp/index.html', context)
+	#return render(request, 'myapp/index.html', context)
+	return HttpResponse(df.to_html())
