@@ -31,6 +31,7 @@
 <option value="ICU">ICU</option>
 <option value="手術室">手術室</option>
 </select>
+{% csrf_token %}
 </form>
 
 	{{ al_table | safe }}
@@ -51,7 +52,6 @@ select.addEventListener('change', function(e) {
 });
 
 function XMLHttpRequestInPOST(val) {
-// csrf_tokenの取得に使う
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -67,34 +67,37 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
 $.ajax({
-           type: "POST",
-           url: "/myapp/ajax_test/",
-           data: {
-               "xlocc": val,
-           },
-           //contentType: "application/json",
-           dataType: "html",
-           // 送信前にヘッダにcsrf_tokenを付与。
-           beforeSend: function(xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-                }
-            },
-            success: function(data) {
-                var span_id = document.getElementById("span3");
-                span_id.textContent = '';
-                span_id.insertAdjacentHTML('afterbegin', data);
+        url: '/myapp/ajax_test/',
+        data: {'xlocc': val},
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
         },
-        error: function(req, text){
-                console.log(text);
-        },
+        dataType: "html", // json
+        type: "POST",
+	success: function(data){
+		var span_id = document.getElementById("span3");
+		span_id.textContent = '';
+		span_id.insertAdjacentHTML('afterbegin', data);
+	},
+	error: function(req, text){
+		console.log(text);
+	},
 });
 }
 </script>
