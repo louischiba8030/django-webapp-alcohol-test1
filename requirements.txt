@@ -1,3 +1,4 @@
+json
 pandas
 django_heroku
 oauth2client

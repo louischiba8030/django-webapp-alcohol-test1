@@ -10,8 +10,8 @@ from . import forms
 #from app.forms import SampleChoiceForm
 from django.template import loader
 
-import re
-from bs4 import BeautifulSoup
+#import re
+#from bs4 import BeautifulSoup
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
