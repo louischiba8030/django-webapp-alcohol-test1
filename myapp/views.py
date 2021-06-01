@@ -72,6 +72,10 @@ def ajax_test(request):
 	id_list = df.iloc[:, 0].values.tolist()
 	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)
+
+	# Concatenate "姓名"
+	df['氏名'] = df['姓'].str.cat(df['名'], sep='　')
+	df = df.drop(columns=['姓', '名'])
 	
 	# Choice
 	#choices = forms.SampleChoiceForm()
