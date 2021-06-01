@@ -8,22 +8,32 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 
-    <link rel="icon" href="#">
-<!--    <link href="{% static 'css/styles.css' %}" rel="stylesheet"> -->
     <title>sample</title>
   </head>
   <body>
-    {% block content %}{% endblock %}
-
-    <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    {% block extrajs %}{% endblock %}
+
+    <!-- Datatables.js -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css"/>
+ 
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
+
+<p><h1>2021年05月の個人別手指消毒使用量（合計）</h1></p>
+<hr />
+
 
 <p>所属部署:<span id="span2"></span></p>
-<form method="POST" action="" id="fid">
+<form id="fid" method="POST" action="">
 <select name="xloc_choice" id="xloc_choice">
 <option disabled selected value>選択してください</option>
 <option value="救外">救外</option>
@@ -33,25 +43,52 @@
 </select>
 {% csrf_token %}
 </form>
-
-	{{ al_table | safe }}
-<p><span id="span3"></span></p>
+<!--<table id="mytable" class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline">-->
+<table id="mytable" class="display">
+<thead>
+<tr>
+<th>ID</th>
+<th>姓</th>
+<th>名</th>
+<th>所属部署</th>
+<th>手指消毒使用量</th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<th>ID</th>
+<th>姓</th>
+<th>名</th>
+<th>所属部署</th>
+<th>手指消毒使用量</th>
+</tr>
+</tfoot>
+</table>
 <script>
 $(function() {
-  //const select = document.querySelector('select[name=xloc_choice]');
-  //$("select").val(0); 
   $('[name=xloc_choice]').prop("selectedIndex", 0);
-});
 const select = document.querySelector('select[name=xloc_choice]');
 select.addEventListener('change', function(e) {
   xloc_id = document.getElementById("span2");
   xloc_id.textContent = '';
   xloc_id.insertAdjacentText('afterbegin', select.value);
 
+  console.log(select.value);
   XMLHttpRequestInPOST(select.value);
-});
+}); // end select
+}); // end onload
+
+function LoadDataTable(data){
+   //Load datatables.js
+  $('#mytable').DataTable({
+//    "processing": true,
+//    "serverSide": true,
+    "ajax":  data,
+  }); // end datatable
+}
 
 function XMLHttpRequestInPOST(val) {
+// csrf_tokenの取得に使う
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -67,39 +104,36 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
-$.ajaxSetup({
-    beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    }
-});
+
 $.ajax({
-        url: '/myapp/ajax_test/',
-        data: {'xlocc': val},
-        beforeSend: function(xhr, settings) {
-          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-          }
+           type: "POST",
+           url: "/myapp/ajax_test/",
+           data: {
+               "xlocc": val,
+           },
+           //contentType: "application/json",
+           dataType: "html",
+           // 送信前にヘッダにcsrf_tokenを付与。
+           beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+                }
+            },
+            success: function(data) {
+//		$("#mytable").DataTable({
+			//"ajax": data,
+//		});
         },
-        dataType: "html", // json
-        type: "POST",
-	success: function(data){
-		var span_id = document.getElementById("span3");
-		span_id.textContent = '';
-		span_id.insertAdjacentHTML('afterbegin', data);
-	},
-	error: function(req, text){
-		console.log(text);
-	},
-});
-}
+        error: function(req, text){
+                console.log(text);
+        },
+}); // end ajax
+} // end XMLHttpRequestInPOST
 </script>
   </body>
 </html>

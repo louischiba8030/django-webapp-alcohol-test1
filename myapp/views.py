@@ -5,16 +5,19 @@
 # Date: 2021/05/28 (Fri.)
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import JsonResponse, HttpResponse
 from . import forms
 #from app.forms import SampleChoiceForm
 from django.template import loader
 
+import re
+from bs4 import BeautifulSoup
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
 import pandas as pd
 import itertools
+import json
 
 def get_alsum(data_df, xid):
 	al_sum = data_df.loc[data_df['ID'] == xid, '手指消毒使用料(単位：ml)'].astype(int).sum()
@@ -30,8 +33,7 @@ def index(request):
 def ajax_test(request):
 	# 部署選択プルダウンの値を取得
 	x_choice = request.POST.get('xlocc', None)
-	# DEBUG
-	print("Booooo!")
+	print("#DEBUG#")
 
 	api_scope = ['https://www.googleapis.com/auth/spreadsheets',
             'https://www.googleapis.com/auth/drive']
@@ -71,9 +73,6 @@ def ajax_test(request):
 	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)
 	
-	# debug
-	print(df)
-
 	# Choice
 	#choices = forms.SampleChoiceForm()
 
@@ -84,4 +83,11 @@ def ajax_test(request):
 	}
 
 	#return render(request, 'myapp/index.html', context)
-	return HttpResponse(df.to_html())
+	data = {"data": df.to_dict(orient='records')}
+	#json_data = json.dumps(data)
+	print("json_data: ", data)
+	#data = {'data': df.to_json(orient='values', force_ascii=False)}
+	return JsonResponse(data)
+	#response = HttpResponse(json.dumps(data), content_type='application/json; charset=utf-8')
+	#print("res: ", response)
+	#return response
