@@ -118,6 +118,7 @@ function LoadDataTable(val){
    //Load datatables.js
 
   $('#mytable').DataTable({
+	destroy: true,
 	dom: 'Bfrtip',
 	buttons: [
 		'copy', 'csv', 'excel',
