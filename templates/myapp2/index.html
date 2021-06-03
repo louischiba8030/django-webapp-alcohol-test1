@@ -25,8 +25,143 @@
 <title>sample</title>
 </head>
 <body>
-{{ msg }}
+<form method="POST" action="/myapp2/ajax_post/">
+<select name="xmonth" id="xmonth">
+<option disabled selected value>月を選択</option>
+<option value="2021年3月">2021年3月</option>
+<option value="2021年4月">2021年4月</option>
+<option value="2021年5月">2021年5月</option>
+<option value="2021年6月">2021年6月</option>
+</select>
+
+<p>所属部署:<span id="span_xloc"></span></p>
+<select name="xloc_choice" id="xloc_choice">
+<option disabled selected value>選択してください</option>
+<option value="救外">救外</option>
+<option value="外来">外来</option>
+<option value="ICU">ICU</option>
+<option value="3F病棟">3F病棟</option>
+<option value="4F病棟">4F病棟</option>
+<option value="手術室">手術室</option>
+<option value="補助者">補助者</option>
+</select>
+<button id="btn1">Submit</button>
+{% csrf_token %}
+</form>
+
+<table id="mytable" class="display">
+<thead>
+<tr>
+<th>日付</th>
+<th>ID</th>
+<th>氏名</th>
+<th>手指消毒使用量</th>
+<th>所属部署</th>
+</tr>
+</thead>
+<tfoot>
+<tr>
+<th>日付</th>
+<th>ID</th>
+<th>氏名</th>
+<th>手指消毒使用量</th>
+<th>所属部署</th>
+</tr>
+</tfoot>
+</table>
+
 <hr />
-{{ al3f_table | safe }}
+<span id="id_div_ajax_response"></span>
+<hr />
+<script>
+// csrf_tokenの取得に使う
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function LoadDataTable(month, loc){
+  var csrf_token = getCookie('csrftoken');
+
+console.log("month: ", month);
+console.log("loc: ", loc);
+  $('#mytable').DataTable({
+    destroy: true,
+    dom: 'Bfrtip',
+    buttons: [
+      'copy', 'csv', 'excel'
+    ],
+    ordering: false,
+    info: false,
+    lengthChange: false,
+    processing: true,
+    serverSide: true,
+    "ajax": {
+      url: "/myapp2/ajax_datatable/",
+      dataSrc: "data",
+      data: {
+        "xmonth": month,
+        "xloc_choice": loc,
+      },
+      type: "POST",
+      dataType: "json",
+      beforeSend: function(xhr, settings){
+        if(!csrfSafeMethod(settings.type) && !this.crossDomain){
+          xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+      }, // end beforeSend
+    }, // end ajax
+  }); // end DataTable defs
+}
+
+$(function() {
+  // デフォルトの値を設定する
+  $('[id=xmonth]').prop("selectedIndex", 0);
+  $('[id=xloc_choice]').prop("selectedIndex", 0);
+
+  // jQuery event listener
+  //$('#btn1').on('click', function(e){
+  $('form').submit(function(e){
+    e.preventDefault();
+    const form = $(this);
+
+    $.ajax({
+      url: form.prop("action"),
+      method: form.prop("method"),
+      timeout: 10000,
+      // dataSrc: "data",
+      data: form.serialize(),
+      dataType: "json", // data type to receive from Server: 'JSON'
+    })
+    .done(response => {
+      resp_xmonth = response["data"]["xmonth"][0];
+      resp_xloc_choice = response['data']['xloc_choice'];
+      $("#id_div_ajax_response").text(resp_xmonth);
+      $("#span_xloc").text(resp_xloc_choice);
+
+      //
+      LoadDataTable(resp_xmonth, resp_xloc_choice);
+    }); // end ajax
+
+  }); // end form_event_loop
+}); // end window.onload
+
+</script>
 </body>
 </html>

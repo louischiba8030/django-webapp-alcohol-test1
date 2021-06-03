@@ -1,4 +1,5 @@
-# 検温一覧の職員idリストから、'外来'の職員のidだけを抽出する
+# 当月分の手指消毒使用量データを表示
+# dt.month
 # Ryo Chiba
 #
 # Last update: 2021/06/03 (Thu.)
@@ -18,23 +19,6 @@ import pandas as pd
 import itertools
 import json
 import datetime as dt
-
-def ajax_datatable(request):
-	fd = {'xmonth': request.POST.getlist('xmonth'),
-		'xloc_choice': request.POST.get('xloc_choice')
-		}
-
-	print("xmonth: ", fd['xmonth'])
-	print("xloc: ", fd['xloc_choice'])
-	context = {}
-	return JsonResponse(context)
-
-def ajax_post(request):
-	form_data = {'xmonth': request.POST.getlist("xmonth"),
-		'xloc_choice': request.POST.get('xloc_choice')
-		}
-	context = {"data": form_data}
-	return JsonResponse(context)
 
 def index(request):
 	template = loader.get_template('myapp2/index.html')
@@ -57,15 +41,20 @@ def get_gspread():
 
 	ss_key = '1FkghGfcnL8ipY20Hl9K73z77RP4frHmmN4k9fxbMKoQ'
 	wb = gspread_client.open_by_key(ss_key)
-	data_sh = wb.worksheet('抽出データ_2021年5月')
+	data_sh = wb.worksheet('フォームの回答 1')
 
 	# Get all values
 	df = pd.DataFrame(data_sh.get_all_values())
-	# remove rows[0, 1]
-	df.drop([0, 1], inplace=True)
 	# Rename columns
-	df.columns = ['日付', 'ID', '氏名', '手指消毒使用量', '部署']
-	df['日付'] = pd.to_datetime(df['日付'])
+	df.columns = ['タイムスタンプ', 'ID', '氏名', '手指消毒使用量']
+	# Remove header
+	df.drop([0], inplace=True)
+	# Convert object to datetime
+	df['タイムスタンプ'] = pd.to_datetime(df['タイムスタンプ'])
+	print(df.dtypes)
 
-	#
+	# Date range - 2021/05/01 ~ 2021/05/31
+	#df = df[(df['タイムスタンプ'] >= dt.datetime(2021,5,1)) & (df['タイムスタンプ'] <= dt.datetime(2021,5,31))]
+	#df = df[df['タイムスタンプ'].dt.month == 5]
+
 	return df
