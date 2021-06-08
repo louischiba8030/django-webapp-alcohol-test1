@@ -20,12 +20,21 @@ import json
 import datetime as dt
 
 def ajax_datatable(request):
-	fd = {'xmonth': request.POST.getlist('xmonth'),
+	fd = {'xmonth': request.POST.get('xmonth'),
 		'xloc_choice': request.POST.get('xloc_choice')
 		}
 
 	print("xmonth: ", fd['xmonth'])
 	print("xloc: ", fd['xloc_choice'])
+
+	# xmonth, xlocに合致する範囲のデータを抽出する
+	# 
+	# gspread -> df読み込み
+
+	df = get_gspread()
+	wsh_name = '抽出データ_' + fd['xmonth']
+	print("wsh_name: ", wsh_name)
+
 	context = {}
 	return JsonResponse(context)
 
@@ -33,16 +42,16 @@ def ajax_post(request):
 	form_data = {'xmonth': request.POST.getlist("xmonth"),
 		'xloc_choice': request.POST.get('xloc_choice')
 		}
+	
 	context = {"data": form_data}
 	return JsonResponse(context)
 
 def index(request):
 	template = loader.get_template('myapp2/index.html')
 
-	df = get_gspread()
 	context = {
 		'msg' : 'Hellooo!',
-		'al3f_table': df.to_html(),
+		#'al3f_table': df.to_html(),
 	}
 
 	return HttpResponse(template.render(context, request))

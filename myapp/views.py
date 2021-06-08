@@ -10,8 +10,6 @@ from . import forms
 #from app.forms import SampleChoiceForm
 from django.template import loader
 
-#import re
-#from bs4 import BeautifulSoup
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
@@ -28,17 +26,15 @@ def index(request):
 	template = loader.get_template('myapp/index.html')
 	context = {}
 	return HttpResponse(template.render(context, request))
-	#return render(request, "myapp/index.html")
 
 def ajax_test(request):
 	# 部署選択プルダウンの値を取得
 	x_choice = request.POST.get('xlocc', None)
-	print("#DEBUG#")
 
-	api_scope = ['https://www.googleapis.com/auth/spreadsheets',
+	api_scope = ['https://www.googleapis.com/auth/spreadsheets.readonly',
             'https://www.googleapis.com/auth/drive']
 
-	credentials_path = 'rock-strength-315100-d5df0ec350b2.json'
+	credentials_path = 'google-services.json'
 	credentials = ServiceAccountCredentials.from_json_keyfile_name(credentials_path, api_scope)
 	gspread_client = gspread.authorize(credentials)
 
@@ -86,12 +82,5 @@ def ajax_test(request):
 		#'location': x_choice,
 	}
 
-	#return render(request, 'myapp/index.html', context)
 	data = {"data": df.to_dict(orient='records')}
-	#json_data = json.dumps(data)
-	print("json_data: ", data)
-	#data = {'data': df.to_json(orient='values', force_ascii=False)}
 	return JsonResponse(data)
-	#response = HttpResponse(json.dumps(data), content_type='application/json; charset=utf-8')
-	#print("res: ", response)
-	#return response
