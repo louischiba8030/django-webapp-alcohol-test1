@@ -30,6 +30,7 @@
 
 
 <p>所属部署:<span id="span2"></span></p>
+<p>年月:<span id="span3"></span></p>
 <form id="fid1" method="POST" action="">
 <div>
 <select name="xloc_choice" id="xloc_choice">
@@ -97,7 +98,10 @@ $(function() {
 	//select1.addEventListener('change', function(e) {
 		xloc_id = document.getElementById("span2");
 		xloc_id.textContent = '';
-		xloc_id.insertAdjacentText('afterbegin', select1.value);
+		xloc_id.insertAdjacentText('afterbegin', ' ' + select1.value);
+		ymonth_id = document.getElementById("span3");
+		ymonth_id.textContent = '';
+		ymonth_id.insertAdjacentText('afterbegin', ' ' + select2.value);
 
   	console.log("xloc = " + select1.value + "ymonth = " + select2.value);
   	LoadDataTable(select1.value, select2.value);
