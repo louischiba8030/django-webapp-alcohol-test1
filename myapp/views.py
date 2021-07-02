@@ -30,6 +30,7 @@ def index(request):
 def ajax_test(request):
 	# 部署選択プルダウンの値を取得
 	x_choice = request.POST.get('xlocc', None)
+	y_choice = request.POST.get('ymonth', None)
 
 	api_scope = ['https://www.googleapis.com/auth/spreadsheets.readonly',
             'https://www.googleapis.com/auth/drive']
@@ -41,7 +42,7 @@ def ajax_test(request):
 	ss_key = '1FkghGfcnL8ipY20Hl9K73z77RP4frHmmN4k9fxbMKoQ'
 	wb = gspread_client.open_by_key(ss_key)
 	wsh = wb.worksheet('職員id一覧')
-	data_sh = wb.worksheet('抽出データ_2021年5月')
+	data_sh = wb.worksheet('抽出データ_%s' % (y_choice))
 
 	# Rename columns
 	df = pd.DataFrame(wsh.get_all_values())
@@ -64,7 +65,6 @@ def ajax_test(request):
 	data_df = data_df.drop(data_df.index[[0]])
 
 	# Append 'E' column: '手指消毒使用量合計'
-	#毒使用量合計'] = df.iloc[:, 0].values.tolist()
 	id_list = df.iloc[:, 0].values.tolist()
 	alsum_values = map(lambda x: get_alsum(data_df, x), id_list)
 	df['手指消毒使用量'] = list(alsum_values)

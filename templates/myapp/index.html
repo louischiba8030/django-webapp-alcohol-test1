@@ -25,14 +25,15 @@
 <title>sample</title>
 </head>
 <body>
-<p><h1>2021年05月の個人別手指消毒使用量（合計）</h1></p>
+<p><h1>個人別手指消毒使用量（合計）</h1></p>
 <hr />
 
 
 <p>所属部署:<span id="span2"></span></p>
-<form id="fid" method="POST" action="">
+<form id="fid1" method="POST" action="">
+<div>
 <select name="xloc_choice" id="xloc_choice">
-<option disabled selected value>選択してください</option>
+<option disabled selected value>部署を選択してください</option>
 <option value="救外">救外</option>
 <option value="外来">外来</option>
 <option value="ICU">ICU</option>
@@ -41,7 +42,18 @@
 <option value="手術室">手術室</option>
 <option value="補助者">補助者</option>
 </select>
+</div>
+<div>
+<select name="ymonth_choice" id="ymonth_choice">
+<option disabled selected value>月を選択してください</option>
+<option value="2021年3月">2021年3月</option>
+<option value="2021年4月">2021年4月</option>
+<option value="2021年5月">2021年5月</option>
+<option value="2021年6月">2021年6月</option>
+</select>
+</div>
 {% csrf_token %}
+<button type="submit" id="btn1" name="btn1" value="検索">検索</button>
 </form>
 <!--<table id="mytable" class="table table-striped table-bordered table-hover dataTable no-footer dtr-inline">-->
 <table id="mytable" class="display">
@@ -64,28 +76,33 @@
 </table>
 <script>
 $(function() {
-// font
-pdfMake.fonts = {
-  GenShin: {
-normal: 'GenShinGothic-Normal-Sub.ttf',
-                    bold: 'GenShinGothic-Normal-Sub.ttf',
-                    italics: 'GenShinGothic-Normal-Sub.ttf',
-                    bolditalics: 'GenShinGothic-Normal-Sub.ttf'
-}
-}
+	// font
+	pdfMake.fonts = {
+  	GenShin: {
+			normal: 'GenShinGothic-Normal-Sub.ttf',
+			bold: 'GenShinGothic-Normal-Sub.ttf',
+			italics: 'GenShinGothic-Normal-Sub.ttf',
+			bolditalics: 'GenShinGothic-Normal-Sub.ttf'
+		}
+	}
 
-//
-  $('[name=xloc_choice]').prop("selectedIndex", 0);
-const select = document.querySelector('select[name=xloc_choice]');
-select.addEventListener('change', function(e) {
-  xloc_id = document.getElementById("span2");
-  xloc_id.textContent = '';
-  xloc_id.insertAdjacentText('afterbegin', select.value);
+	//
+	$('[name=xloc_choice]').prop("selectedIndex", 0);
+	$('[name=ymonth_choice]').prop("selectedIndex", 0);
+	const select1 = document.querySelector('select[name=xloc_choice]');
+	const select2 = document.querySelector('select[name=ymonth_choice]');
 
-  console.log(select.value);
-  LoadDataTable(select.value);
-  //XMLHttpRequestInPOST(select.value);
-}); // end select
+	fid1.addEventListener("submit", (e) => {
+		e.preventDefault()
+	//select1.addEventListener('change', function(e) {
+		xloc_id = document.getElementById("span2");
+		xloc_id.textContent = '';
+		xloc_id.insertAdjacentText('afterbegin', select1.value);
+
+  	console.log("xloc = " + select1.value + "ymonth = " + select2.value);
+  	LoadDataTable(select1.value, select2.value);
+  	//XMLHttpRequestInPOST(select.value);
+	}); // end select
 }); // end onload
 
 // csrf_tokenの取得に使う
@@ -110,7 +127,7 @@ function csrfSafeMethod(method) {
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
 }
 
-function LoadDataTable(val){
+function LoadDataTable(xloc, ymonth){
   var csrf_token = getCookie("csrftoken");
    //Load datatables.js
 
@@ -136,7 +153,8 @@ function LoadDataTable(val){
       "url": "/myapp/ajax_test/",
       "dataSrc": "data",
       "data": {
-       "xlocc": val,
+       "xlocc": xloc,
+				"ymonth": ymonth,
       },
       "type": "POST",
       "beforeSend": function(xhr, settings) {
